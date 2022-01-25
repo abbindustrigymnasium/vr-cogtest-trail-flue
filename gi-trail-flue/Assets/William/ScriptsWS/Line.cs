@@ -29,17 +29,20 @@ public class Line : MonoBehaviour
                 // Debug.Log(name);
                 s1 = s2;
                 s2 = name;
-                path.Add(s2);
-                Debug.Log(path);
-                if (!string.IsNullOrEmpty(s1) && !(s1==s2))
+                if (!(s1==s2))
                 {
-                    SomeFunction(s1, s2);
+                    path.Add(s2);
+                    // Debug.Log(path);
+                    if (!string.IsNullOrEmpty(s1))
+                    {
+                        drawLine(s1, s2);
+                    }
                 }
             }
         }
     }
 
-    private void SomeFunction(string s1, string s2)
+    private void drawLine(string s1, string s2)
     {
         var go = new GameObject();
         var lr = go.AddComponent<LineRenderer>();
