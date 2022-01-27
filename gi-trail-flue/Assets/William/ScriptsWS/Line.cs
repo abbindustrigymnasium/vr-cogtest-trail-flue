@@ -8,6 +8,7 @@ public class Line : MonoBehaviour
     public Camera cam;
     public Material myMat;
     private List<string> path = new List<string>();
+    private List<string> pairs = new List<string>();
     private string s1;
     private string s2 = "";
     // Start is called before the first frame update
@@ -27,15 +28,21 @@ public class Line : MonoBehaviour
             {
                 string name = hit.collider.gameObject.name;
                 // Debug.Log(name);
-                s1 = s2;
-                s2 = name;
-                if (!(s1==s2))
+                if (!(s2==name))
                 {
-                    path.Add(s2);
-                    // Debug.Log(path);
-                    if (!string.IsNullOrEmpty(s1))
+                    string pair1 = s2 + name;
+                    string pair2 = name + s2;
+                    if (!(pairs.Contains(pair1)) && !(pairs.Contains(pair2)))
                     {
-                        drawLine(s1, s2);
+                        s1 = s2;
+                        s2 = name;
+                        path.Add(s2);
+                        // Debug.Log(path);
+                        if (!string.IsNullOrEmpty(s1))
+                        {   
+                            pairs.Add(pair1);
+                            drawLine(s1, s2);
+                        }
                     }
                 }
             }
