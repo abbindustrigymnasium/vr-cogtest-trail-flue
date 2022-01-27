@@ -360,8 +360,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5459c3d2b5ee77049b8db394e8856060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalSpeed: 1
-  verticalSpeed: 1
+  horizontalSpeed: 0.3
+  verticalSpeed: 0.3
   cam: {fileID: 183950275}
 --- !u!1 &2083960024
 GameObject:
