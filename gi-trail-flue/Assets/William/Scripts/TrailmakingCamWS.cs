@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
  
-public class Cam : MonoBehaviour
+public class TrailmakingCamWS : MonoBehaviour
 {
     // horizontal rotation speed
     public float horizontalSpeed = 0.3f;

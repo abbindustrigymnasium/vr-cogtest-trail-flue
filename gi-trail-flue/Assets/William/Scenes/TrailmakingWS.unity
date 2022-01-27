@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 846560892}
   m_Layer: 0
   m_Name: Sphere (7)
-  m_TagString: Untagged
+  m_TagString: end
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -982,7 +982,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5445001165462474955, guid: 98858d9d9da3a4246b165db11df199c2, type: 3}
   m_PrefabInstance: {fileID: 5445001166648986135}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1598675679
+--- !u!114 &1598675677
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -996,6 +996,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 1090830189}
   myMat: {fileID: 2100000, guid: 7e55c329ff7186c47a01a1a7217e91e7, type: 2}
+--- !u!114 &1598675678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1598675676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e805a76afdc544598fdc09e14b1fcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalSpeed: 0.3
+  verticalSpeed: 0.3
+  cam: {fileID: 1090830189}
 --- !u!1 &1681453556
 GameObject:
   m_ObjectHideFlags: 0
@@ -1343,5 +1358,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5445001165462474953, guid: 98858d9d9da3a4246b165db11df199c2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 98858d9d9da3a4246b165db11df199c2, type: 3}

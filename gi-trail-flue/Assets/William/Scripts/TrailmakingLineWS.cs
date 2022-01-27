@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Line : MonoBehaviour
+public class TrailmakingLineWS : MonoBehaviour
 {
 
     public Camera cam;
@@ -27,6 +27,7 @@ public class Line : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 string name = hit.collider.gameObject.name;
+                string tag = hit.collider.gameObject.tag;
                 // Debug.Log(name);
                 if (!(s2==name))
                 {
@@ -42,6 +43,10 @@ public class Line : MonoBehaviour
                         {   
                             pairs.Add(pair1);
                             drawLine(s1, s2);
+                            if (tag == "end")
+                            {
+                                onEnd();
+                            }
                         }
                     }
                 }
@@ -53,6 +58,9 @@ public class Line : MonoBehaviour
     {
         var go = new GameObject();
         var lr = go.AddComponent<LineRenderer>();
+
+        go.name = "Line";
+        go.tag = "line";
 
         lr.material = myMat;
 
@@ -66,5 +74,25 @@ public class Line : MonoBehaviour
  
         lr.SetPosition(0, gun.transform.position);
         lr.SetPosition(1, projectile.transform.position);
+    }
+
+    private void onEnd()
+    {
+        GameObject[] lines = GameObject.FindGameObjectsWithTag("line");
+        foreach (GameObject line in lines)
+        {
+            Destroy(line);
+        }
+        // Reset variables
+        s1 = "";
+        s2 = "";
+        path = new List<string>();
+        pairs = new List<string>();
+    }
+
+    private bool validate()
+    {
+        // todo: validate order
+        return true;
     }
 }
