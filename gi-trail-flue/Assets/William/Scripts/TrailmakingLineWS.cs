@@ -11,17 +11,14 @@ public class TrailmakingLineWS : MonoBehaviour
     private List<string> pairs = new List<string>();
     private List<List<string>> order = new List<List<string>>()
     {
-        new List<string>() // Add a new one of these lists for all maps you've made, alternatively use the same order for the names of all spheres
-        {
-            "Sphere (6)",
-            "Sphere",
-            "Sphere (5)",
-            "Sphere (4)",
-            "Sphere (2)",
-            "Sphere (1)",
-            "Sphere (3)",
-            "Sphere (7)"
-        }
+        "Sphere (6)",
+        "Sphere",
+        "Sphere (5)",
+        "Sphere (4)",
+        "Sphere (2)",
+        "Sphere (1)",
+        "Sphere (3)",
+        "Sphere (7)"
     };
     private int corrects = 0;
     private int wrongs = 0;
@@ -109,7 +106,7 @@ public class TrailmakingLineWS : MonoBehaviour
 
     private bool validate()
     {
-        if (string.Join("", path.ToArray()) == string.Join("", order[0].ToArray()))
+        if (string.Join("", path.ToArray()) == string.Join("", order.ToArray()))
         {
             corrects += 1;
             //path.ForEach(x=>Debug.Log(x + " "));
