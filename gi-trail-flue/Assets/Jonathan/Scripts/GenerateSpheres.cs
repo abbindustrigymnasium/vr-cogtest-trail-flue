@@ -5,10 +5,11 @@ using UnityEngine;
 public class GenerateSpheres : MonoBehaviour
 {
     public GameObject spherePrefab;
-    public Material lightMaterial;
-    public Material darkMaterial;
     public Camera playerCamera;
-
+    public string lightColorHEX;
+    public string darkColorHEX;
+    Color LightColor;
+    Color DarkColor;
     public class SphereValues
     {
         public float rho; 
@@ -30,32 +31,32 @@ public class GenerateSpheres : MonoBehaviour
     SphereValues[,] ListOfSphereValues = new SphereValues[,]
     {
         {
-            new SphereValues(15,0,90,"white","1"),
-            new SphereValues(15,72,90,"black","A"), 
-            new SphereValues(15,144,90,"white","2"), 
-            new SphereValues(15,216,90,"black","B"), 
-            new SphereValues(15,288,90,"white","3"), 
+            new SphereValues(15,0,90,"light","1"),
+            new SphereValues(15,72,90,"dark","A"), 
+            new SphereValues(15,144,90,"light","2"), 
+            new SphereValues(15,216,90,"dark","B"), 
+            new SphereValues(15,288,90,"light","3"), 
         },
         {
-            new SphereValues(15,0,85,"black","C"),
-            new SphereValues(15,72,85,"white","4"), 
-            new SphereValues(15,144,85,"black","D"), 
-            new SphereValues(15,216,85,"white","5"), 
-            new SphereValues(15,288,85,"black","E"), 
+            new SphereValues(15,0,85,"dark","C"),
+            new SphereValues(15,72,85,"light","4"), 
+            new SphereValues(15,144,85,"dark","D"), 
+            new SphereValues(15,216,85,"light","5"), 
+            new SphereValues(15,288,85,"dark","E"), 
         },
         {
-            new SphereValues(15,0,80,"white","6"),
-            new SphereValues(15,72,80,"black","F"), 
-            new SphereValues(15,144,80,"white","7"), 
-            new SphereValues(15,216,80,"black","G"), 
-            new SphereValues(15,288,80,"white","8"), 
+            new SphereValues(15,0,80,"light","6"),
+            new SphereValues(15,72,80,"dark","F"), 
+            new SphereValues(15,144,80,"light","7"), 
+            new SphereValues(15,216,80,"dark","G"), 
+            new SphereValues(15,288,80,"light","8"), 
         },
         {
-            new SphereValues(15,0,75,"black","H"),
-            new SphereValues(15,72,75,"white","9"), 
-            new SphereValues(15,144,75,"black","I"), 
-            new SphereValues(15,216,75,"white","10"), 
-            new SphereValues(15,288,75,"black","J"), 
+            new SphereValues(15,0,75,"dark","H"),
+            new SphereValues(15,72,75,"light","9"), 
+            new SphereValues(15,144,75,"dark","I"), 
+            new SphereValues(15,216,75,"light","10"), 
+            new SphereValues(15,288,75,"dark","J"), 
         }
     };
 
@@ -63,6 +64,9 @@ public class GenerateSpheres : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+        ColorUtility.TryParseHtmlString(lightColorHEX, out LightColor);
+        ColorUtility.TryParseHtmlString(darkColorHEX, out DarkColor);
         StartCoroutine("Spawn");
     }
 
@@ -100,16 +104,11 @@ public class GenerateSpheres : MonoBehaviour
         var sphereScript = sphere.GetComponent<TextOnObjectManager>();
         sphereScript.label = label;
         sphereScript.playerCamera = playerCamera;
-        // var sphereRenderer = sphere.GetComponent<Renderer>();
 
-        // if (color == "black")
-        // {
-        //     sphereRenderer.material = darkMaterial;
-        // }
-        //  if (color == "white")
-        // {
-        //     sphereRenderer.material = lightMaterial;
-        // }
+
+        var sphereRenderer = sphere.GetComponent<Renderer>();
+        Color colorValue = color == "light" ? LightColor: DarkColor;
+        sphereRenderer.material.SetColor("_Color", colorValue);
         sphere.SetActive(true);
     }
 
