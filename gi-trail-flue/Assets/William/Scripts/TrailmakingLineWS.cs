@@ -9,7 +9,7 @@ public class TrailmakingLineWS : MonoBehaviour
     public Material myMat;
     private List<string> path = new List<string>();
     private List<string> pairs = new List<string>();
-    private List<List<string>> order = new List<List<string>>()
+    private List<string> order = new List<string>()
     {
         "Sphere (6)",
         "Sphere",
