@@ -9,6 +9,22 @@ public class TrailmakingLineWS : MonoBehaviour
     public Material myMat;
     private List<string> path = new List<string>();
     private List<string> pairs = new List<string>();
+    private List<List<string>> order = new List<List<string>>()
+    {
+        new List<string>() // Add a new one of these lists for all maps you've made, alternatively use the same order for the names of all spheres
+        {
+            "Sphere (6)",
+            "Sphere",
+            "Sphere (5)",
+            "Sphere (4)",
+            "Sphere (2)",
+            "Sphere (1)",
+            "Sphere (3)",
+            "Sphere (7)"
+        }
+    };
+    private int corrects = 0;
+    private int wrongs = 0;
     private string s1;
     private string s2 = "";
     // Start is called before the first frame update
@@ -78,6 +94,7 @@ public class TrailmakingLineWS : MonoBehaviour
 
     private void onEnd()
     {
+        validate();
         GameObject[] lines = GameObject.FindGameObjectsWithTag("line");
         foreach (GameObject line in lines)
         {
@@ -92,7 +109,21 @@ public class TrailmakingLineWS : MonoBehaviour
 
     private bool validate()
     {
-        // todo: validate order
-        return true;
+        if (string.Join("", path.ToArray()) == string.Join("", order[0].ToArray()))
+        {
+            corrects += 1;
+            //path.ForEach(x=>Debug.Log(x + " "));
+            Debug.Log(corrects);
+            Debug.Log(wrongs);
+            return true;
+        }
+        else
+        {
+            wrongs += 1;
+            //path.ForEach(x=>Debug.Log(x + " "));
+            Debug.Log(corrects);
+            Debug.Log(wrongs);
+            return false;
+        }
     }
 }
