@@ -36,12 +36,11 @@ public class Line : MonoBehaviour
         s2 = name;
 
         path.Add(s2);
+        GameEvents.current.NewLine(path);
 
         if (string.IsNullOrEmpty(s1)) return;
 
         pairs.Add(pair1);
-
-        GameEvents.current.NewLine(path);
 
         drawLine(s1, s2);
 
