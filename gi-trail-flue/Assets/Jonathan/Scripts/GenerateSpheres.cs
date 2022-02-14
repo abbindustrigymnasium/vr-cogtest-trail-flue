@@ -101,7 +101,7 @@ public class GenerateSpheres : MonoBehaviour
         GameObject sphere = Instantiate(spherePrefab, spherePosition, Quaternion.identity) as GameObject;
         
         sphere.name = "Sphere" + rho + theta + phi;
-        var sphereScript = sphere.GetComponent<TextOnObjectManager>();
+        var sphereScript = sphere.GetComponent<TextOnObject>();
         sphereScript.label = label;
         sphereScript.playerCamera = playerCamera;
 

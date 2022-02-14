@@ -175,7 +175,7 @@ public class TrailmakingLineWS : MonoBehaviour
         {
             sphere.tag = "end";
         }
-        var sphereScript = sphere.GetComponent<TextOnObjectManager>();
+        var sphereScript = sphere.GetComponent<TextOnObject>();
         sphereScript.label = label;
         sphereScript.playerCamera = cam;
 
