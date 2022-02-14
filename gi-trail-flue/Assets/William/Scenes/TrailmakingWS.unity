@@ -322,8 +322,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spherePrefab: {fileID: 355027786761755367, guid: 507d0897b2062b347a856965f026acb1, type: 3}
-  lightMaterial: {fileID: 2100000, guid: 32cbe45c21bd1694d873f9bcdd182337, type: 2}
-  darkMaterial: {fileID: 2100000, guid: 12e97e5af1bbd834391e11b6635ed86b, type: 2}
+  lightColorHEX: '#d4b34a'
+  darkColorHEX: '#000080'
   cam: {fileID: 1090830189}
   myMat: {fileID: 2100000, guid: 7e55c329ff7186c47a01a1a7217e91e7, type: 2}
 --- !u!114 &1598675678
