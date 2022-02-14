@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TextOnObjectManager : MonoBehaviour
+public class TextOnObject : MonoBehaviour
 {
     public Camera playerCamera;
     public string label;

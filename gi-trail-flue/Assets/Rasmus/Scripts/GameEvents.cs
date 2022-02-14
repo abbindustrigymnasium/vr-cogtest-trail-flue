@@ -12,10 +12,9 @@ public class GameEvents : MonoBehaviour
         current = this;
     }
 
-    public event Action onClick;
-    public void Click()
+    public event Action<List<string>> onNewLine;
+    public void NewLine(List<string> path)
     {
-        if (onClick == null) return;
-        onClick();
+        if (onNewLine != null) onNewLine(path);
     }
 }

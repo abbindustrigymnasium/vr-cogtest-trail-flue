@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LineManager : MonoBehaviour
+public class Line : MonoBehaviour
 {
     public Camera cam;
     public Material myMat;
@@ -15,44 +15,40 @@ public class LineManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (!Physics.Raycast(ray, out hit)) return;
+
+        string name = hit.collider.gameObject.name;
+        string tag = hit.collider.gameObject.tag;
+
+        if (s2 == name) return;
+
+        string pair1 = s2 + name;
+        string pair2 = name + s2;
+
+        if (pairs.Contains(pair1) || pairs.Contains(pair2)) return;
+
+        s1 = s2;
+        s2 = name;
+
+        path.Add(s2);
+
+        if (string.IsNullOrEmpty(s1)) return;
+
+        pairs.Add(pair1);
+
+        GameEvents.current.NewLine(path);
+
+        drawLine(s1, s2);
+
+        /*if (tag == "end")
         {
-            RaycastHit hit;
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                string name = hit.collider.gameObject.name;
-                string tag = hit.collider.gameObject.tag;
-
-                if (!(s2 == name))
-                {
-                    string pair1 = s2 + name;
-                    string pair2 = name + s2;
-
-                    if (!(pairs.Contains(pair1)) && !(pairs.Contains(pair2)))
-                    {
-                        s1 = s2;
-                        s2 = name;
-
-                        path.Add(s2);
-
-                        if (!string.IsNullOrEmpty(s1))
-                        {
-                            pairs.Add(pair1);
-                            drawLine(s1, s2);
-
-                            GameEvents.current.Click();
-
-                            /*if (tag == "end")
-                            {
-                                onEnd();
-                            }*/
-                        }
-                    }
-                }
-            }
-        }
+            onEnd();
+        }*/
     }
 
     private void drawLine(string s1, string s2)
