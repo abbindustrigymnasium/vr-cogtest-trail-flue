@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrailmakingLineWS : MonoBehaviour
+public class Line2 : MonoBehaviour
 {
+    public Camera cam;
+    public Material myMat;
 
     public GameObject spherePrefab;
     public string lightColorHEX;
@@ -11,33 +13,21 @@ public class TrailmakingLineWS : MonoBehaviour
     Color LightColor;
     Color DarkColor;
 
-    public Camera cam;
-    public Material myMat;
     private List<string> path = new List<string>();
     private List<string> pairs = new List<string>();
-    private List<string> order = new List<string>()
-    {
-        "Sphere0_textDecal",
-        "Sphere1_textDecal",
-        "Sphere2_textDecal",
-        "Sphere3_textDecal",
-        "Sphere4_textDecal",
-        "Sphere5_textDecal",
-    };
-    private int corrects = 0;
-    private int wrongs = 0;
+
     private string s1;
     private string s2 = "";
     private bool cont = true;
-    // Start is called before the first frame update
+
     void Start()
     {
         ColorUtility.TryParseHtmlString(lightColorHEX, out LightColor);
         ColorUtility.TryParseHtmlString(darkColorHEX, out DarkColor);
         StartCoroutine("Spawn");
+        GameEvents2.current.onNewGame += OnNewGame;
     }
 
-    // Update is called once per frame
     void Update()
     {
         handleMouse();
@@ -53,82 +43,50 @@ public class TrailmakingLineWS : MonoBehaviour
 
         lr.material = myMat;
 
-        lr.material.color = new Color(1,1,1);
+        lr.material.color = new Color(1, 1, 1);
 
         lr.startWidth = 0.1f;
         lr.endWidth = 0.1f;
- 
+
         var gun = GameObject.Find(s1);
         var projectile = GameObject.Find(s2);
- 
+
         lr.SetPosition(0, gun.transform.position);
         lr.SetPosition(1, projectile.transform.position);
     }
 
-    private void onEnd()
-    {
-        validate();
-        // Reset variables
-        s1 = "";
-        s2 = "";
-        path = new List<string>();
-        pairs = new List<string>();
-        
-        cont = false;
-    }
-
-    private bool validate()
-    {
-        if (string.Join("", path.ToArray()) == string.Join("", order.ToArray()))
-        {
-            corrects += 1;
-            //path.ForEach(x=>Debug.Log(x + " "));
-            Debug.Log(corrects);
-            Debug.Log(wrongs);
-            return true;
-        }
-        else
-        {
-            wrongs += 1;
-            //path.ForEach(x=>Debug.Log(x + " "));
-            Debug.Log(corrects);
-            Debug.Log(wrongs);
-            return false;
-        }
-    }
 
     private void handleMouse()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
-            {
-                string name = hit.collider.gameObject.name;
-                string tag = hit.collider.gameObject.tag;
-                if (!(s2==name))
-                {
-                    string pair1 = s2 + name;
-                    string pair2 = name + s2;
-                    if (!(pairs.Contains(pair1)) && !(pairs.Contains(pair2)))
-                    {
-                        s1 = s2;
-                        s2 = name;
-                        path.Add(s2);
-                        if (!string.IsNullOrEmpty(s1))
-                        {
-                            pairs.Add(pair1);
-                            drawLine(s1, s2);
-                            if (tag == "end")
-                            {
-                                onEnd();
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (!Physics.Raycast(ray, out hit)) return;
+
+        string name = hit.collider.gameObject.name;
+        string tag = hit.collider.gameObject.tag;
+
+        if (s2 == name) return;
+
+        string pair1 = s2 + name;
+        string pair2 = name + s2;
+
+        if (pairs.Contains(pair1) || pairs.Contains(pair2)) return;
+
+        s1 = s2;
+        s2 = name;
+
+        path.Add(s2);
+
+        if (string.IsNullOrEmpty(s1)) return;
+
+        pairs.Add(pair1);
+
+        GameEvents2.current.NewLine(path);
+
+        drawLine(s1, s2);
     }
 
     IEnumerator Spawn()
@@ -204,12 +162,13 @@ public class TrailmakingLineWS : MonoBehaviour
         }
 
     }
+
     SphereValues[,] ListOfSphereValues = new SphereValues[,]
     {
 
 
 
-                {
+        {
             new SphereValues(8,72,65,"white","1"),
             new SphereValues(8,120,75,"white","2"), 
             new SphereValues(8,210,70,"white","3"), 
@@ -369,35 +328,21 @@ public class TrailmakingLineWS : MonoBehaviour
             new SphereValues(8,244,70,"white","5"),
             new SphereValues(8,65,57,"white","6"), 
         },
-
-        // {
-        //     new SphereValues(15,0,90,"white","1"),
-        //     new SphereValues(15,72,90,"black","A"), 
-        //     new SphereValues(15,144,90,"white","2"), 
-        //     new SphereValues(15,216,90,"black","B"), 
-        //     new SphereValues(15,288,90,"white","3"), 
-        // },
-        // {
-        //     new SphereValues(15,0,85,"black","C"),
-        //     new SphereValues(15,72,85,"white","4"), 
-        //     new SphereValues(15,144,85,"black","D"), 
-        //     new SphereValues(15,216,85,"white","5"), 
-        //     new SphereValues(15,288,85,"black","E"), 
-        // },
-        // {
-        //     new SphereValues(15,0,80,"white","6"),
-        //     new SphereValues(15,72,80,"black","F"), 
-        //     new SphereValues(15,144,80,"white","7"), 
-        //     new SphereValues(15,216,80,"black","G"), 
-        //     new SphereValues(15,288,80,"white","8"), 
-        // },
-        // {
-        //     new SphereValues(15,0,75,"black","H"),
-        //     new SphereValues(15,72,75,"white","9"), 
-        //     new SphereValues(15,144,75,"black","I"), 
-        //     new SphereValues(15,216,75,"white","10"), 
-        //     new SphereValues(15,288,75,"black","J"), 
-        // }
     };
 
+    void OnNewGame(List<string> path1)
+    {
+        s1 = "";
+        s2 = "";
+        path = new List<string>();
+        pairs = new List<string>();
+        
+        cont = false;
+    }
+
+
+    void OnDestroy()
+    {
+        GameEvents2.current.onNewGame -= OnNewGame;
+    }
 }
