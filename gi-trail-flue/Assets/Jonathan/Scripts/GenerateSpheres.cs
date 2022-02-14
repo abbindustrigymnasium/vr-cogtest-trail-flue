@@ -5,74 +5,111 @@ using UnityEngine;
 public class GenerateSpheres : MonoBehaviour
 {
     public GameObject spherePrefab;
-    public Material lightMaterial;
-    public Material darkMaterial;
+    public Camera playerCamera;
+    public string lightColorHEX;
+    public string darkColorHEX;
+    Color LightColor;
+    Color DarkColor;
+    public class SphereValues
+    {
+        public float rho; 
+        public float theta; 
+        public float phi; 
+        public string color;
+        public string label;
 
+        public SphereValues(float rhoI, float thetaI, float phiI, string colorI, string labelI)
+        {
+            rho = rhoI;
+            theta = thetaI * Mathf.Deg2Rad;
+            phi =  phiI * Mathf.Deg2Rad;
+            color = colorI;
+            label = labelI;
+        }
 
-    private float[,,] toGenerate = {{{10,1,1,1},{20,1,1,0},{30,1,1,1},{40,1,1,0},{50,1,1,1},{60,1,1,0}},
-                                    {{10,1,2,1},{20,1,2,0},{30,1,2,1},{40,1,2,0},{50,1,2,1},{60,1,2,0}},
-                                    {{10,2,1,1},{20,2,1,0},{30,2,1,1},{40,2,1,0},{50,2,1,1},{60,2,1,0}},
-                                    {{10,2,2,1},{20,2,2,0},{30,2,2,1},{40,2,2,0},{50,2,2,1},{60,2,2,0}},
-                                    {{10,1,0,1},{20,1,0,0},{30,1,0,1},{40,1,0,0},{50,1,0,1},{60,1,0,0}}
+    }
+    SphereValues[,] ListOfSphereValues = new SphereValues[,]
+    {
+        {
+            new SphereValues(15,0,90,"light","1"),
+            new SphereValues(15,72,90,"dark","A"), 
+            new SphereValues(15,144,90,"light","2"), 
+            new SphereValues(15,216,90,"dark","B"), 
+            new SphereValues(15,288,90,"light","3"), 
+        },
+        {
+            new SphereValues(15,0,85,"dark","C"),
+            new SphereValues(15,72,85,"light","4"), 
+            new SphereValues(15,144,85,"dark","D"), 
+            new SphereValues(15,216,85,"light","5"), 
+            new SphereValues(15,288,85,"dark","E"), 
+        },
+        {
+            new SphereValues(15,0,80,"light","6"),
+            new SphereValues(15,72,80,"dark","F"), 
+            new SphereValues(15,144,80,"light","7"), 
+            new SphereValues(15,216,80,"dark","G"), 
+            new SphereValues(15,288,80,"light","8"), 
+        },
+        {
+            new SphereValues(15,0,75,"dark","H"),
+            new SphereValues(15,72,75,"light","9"), 
+            new SphereValues(15,144,75,"dark","I"), 
+            new SphereValues(15,216,75,"light","10"), 
+            new SphereValues(15,288,75,"dark","J"), 
+        }
     };
-    
+
+
     // Start is called before the first frame update
     void Start()
     {
-        // spawnSphere(5, 60, 30, 0);
-        // StartCoroutine("Spawn");
+        
+        ColorUtility.TryParseHtmlString(lightColorHEX, out LightColor);
+        ColorUtility.TryParseHtmlString(darkColorHEX, out DarkColor);
+        StartCoroutine("Spawn");
     }
 
-    // Update is called once per 
-    // IEnumerator Spawn(){
-    //     for(var x = 0; x < toGenerate.GetLength(0); x ++){
-    //         for(var y = 0; y < toGenerate.GetLength(1); y ++){
-    //             spawnSphere(toGenerate[x,y,0], toGenerate[x,y,1], toGenerate[x,y,2], (int)toGenerate[x,y,3]);  //Mathf.Deg2Rad
+    IEnumerator Spawn(){
+        for(var x = 0; x < ListOfSphereValues.GetLength(0); x ++){
+            for(var y = 0; y < ListOfSphereValues.GetLength(1); y ++){
+                spawnSphere(ListOfSphereValues[x,y].rho, ListOfSphereValues[x,y].theta, ListOfSphereValues[x,y].phi, ListOfSphereValues[x,y].color, ListOfSphereValues[x,y].label);  
                 
-    //         }
-    //         yield return new WaitForSeconds(1.0f);
-    //         GameObject[] objects = GameObject.FindGameObjectsWithTag("sphere");
-
-    //         for (int i=0; i < objects.Length; i++){
-    //             Destroy(objects[i]);
-    //         }
-
-    //     }
-    // }
-    void Update()
-    {
-        
-
-        if (Input.GetKeyDown("space"))
-        {
-            GameObject[] objects = GameObject.FindGameObjectsWithTag("sphere");
-
-            for (int i=0; i<objects.Length; i++){
-                Destroy(objects[i]);
             }
-            for (int i=0; i<Random.Range(6, 15); i++){
-                spawnSphere(Random.Range(10f, 30f), Random.Range(0f,Mathf.PI * 3 /2), Random.Range(0f,Mathf.PI/2), Random.Range(0,2));
+            do 
+            {
+                yield return null;
+            } while (!Input.GetKeyDown("space"));
+
+            GameObject[] spheres = GameObject.FindGameObjectsWithTag("sphere");
+
+            for (int i=0; i < spheres.Length; i++){
+                Destroy(spheres[i]);
+            }
+            GameObject[] lines = GameObject.FindGameObjectsWithTag("line");
+
+            for (int i=0; i < lines.Length; i++){
+                Destroy(lines[i]);
             }
             
 
         }
     }
 
-    void spawnSphere(float rho, float theta, float phi, int colored){
+    void spawnSphere(float rho, float theta, float phi, string color, string label){
         Vector3 spherePosition = new Vector3(rho * Mathf.Sin(phi) * Mathf.Cos(theta), rho * Mathf.Cos(phi), rho * Mathf.Sin(phi) * Mathf.Sin(theta));
         GameObject sphere = Instantiate(spherePrefab, spherePosition, Quaternion.identity) as GameObject;
+        
         sphere.name = "Sphere" + rho + theta + phi;
-        sphere.transform.LookAt(Vector3.zero);
-        var sphereRenderer = sphere.GetComponent<Renderer>();
+        var sphereScript = sphere.GetComponent<TextOnObjectManager>();
+        sphereScript.label = label;
+        sphereScript.playerCamera = playerCamera;
 
-        if (colored == 1)
-        {
-            sphereRenderer.material = darkMaterial;
-        }
-         if (colored == 0)
-        {
-            sphereRenderer.material = lightMaterial;
-        }
+
+        var sphereRenderer = sphere.GetComponent<Renderer>();
+        Color colorValue = color == "light" ? LightColor: DarkColor;
+        sphereRenderer.material.SetColor("_Color", colorValue);
+        sphere.SetActive(true);
     }
 
 }

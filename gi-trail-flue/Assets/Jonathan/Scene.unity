@@ -157,9 +157,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4834a36111c8ac4d9aed11db6b7c63c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spherePrefab: {fileID: 5062580170040074729, guid: 61cb7b2f0783e084483b65478ff03128, type: 3}
+  spherePrefab: {fileID: 355027786761755367, guid: b522737f77b563d44804477453517dc4, type: 3}
   lightMaterial: {fileID: 2100000, guid: 201b909f443980547b2f5cc8e53cedcb, type: 2}
   darkMaterial: {fileID: 2100000, guid: c528ad3f41c60af47846fe134b161e4b, type: 2}
+  playerCamera: {fileID: 183950275}
 --- !u!4 &1111680564
 Transform:
   m_ObjectHideFlags: 0
@@ -322,6 +323,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5445001165462474955, guid: 98858d9d9da3a4246b165db11df199c2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5445001165558773113, guid: 98858d9d9da3a4246b165db11df199c2, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -439,8 +444,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2083960024}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

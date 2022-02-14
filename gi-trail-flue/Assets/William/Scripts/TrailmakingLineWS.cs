@@ -5,66 +5,42 @@ using UnityEngine;
 public class TrailmakingLineWS : MonoBehaviour
 {
 
+    public GameObject spherePrefab;
+    public string lightColorHEX;
+    public string darkColorHEX;
+    Color LightColor;
+    Color DarkColor;
+
     public Camera cam;
     public Material myMat;
     private List<string> path = new List<string>();
     private List<string> pairs = new List<string>();
     private List<string> order = new List<string>()
     {
-        "Sphere (6)",
-        "Sphere",
-        "Sphere (5)",
-        "Sphere (4)",
-        "Sphere (2)",
-        "Sphere (1)",
-        "Sphere (3)",
-        "Sphere (7)"
+        "Sphere0_textDecal",
+        "Sphere1_textDecal",
+        "Sphere2_textDecal",
+        "Sphere3_textDecal",
+        "Sphere4_textDecal",
+        "Sphere5_textDecal",
     };
     private int corrects = 0;
     private int wrongs = 0;
     private string s1;
     private string s2 = "";
+    private bool cont = true;
     // Start is called before the first frame update
     void Start()
     {
-        
+        ColorUtility.TryParseHtmlString(lightColorHEX, out LightColor);
+        ColorUtility.TryParseHtmlString(darkColorHEX, out DarkColor);
+        StartCoroutine("Spawn");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
-            {
-                string name = hit.collider.gameObject.name;
-                string tag = hit.collider.gameObject.tag;
-                // Debug.Log(name);
-                if (!(s2==name))
-                {
-                    string pair1 = s2 + name;
-                    string pair2 = name + s2;
-                    if (!(pairs.Contains(pair1)) && !(pairs.Contains(pair2)))
-                    {
-                        s1 = s2;
-                        s2 = name;
-                        path.Add(s2);
-                        // Debug.Log(path);
-                        if (!string.IsNullOrEmpty(s1))
-                        {   
-                            pairs.Add(pair1);
-                            drawLine(s1, s2);
-                            if (tag == "end")
-                            {
-                                onEnd();
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        handleMouse();
     }
 
     private void drawLine(string s1, string s2)
@@ -92,16 +68,13 @@ public class TrailmakingLineWS : MonoBehaviour
     private void onEnd()
     {
         validate();
-        GameObject[] lines = GameObject.FindGameObjectsWithTag("line");
-        foreach (GameObject line in lines)
-        {
-            Destroy(line);
-        }
         // Reset variables
         s1 = "";
         s2 = "";
         path = new List<string>();
         pairs = new List<string>();
+        
+        cont = false;
     }
 
     private bool validate()
@@ -123,4 +96,244 @@ public class TrailmakingLineWS : MonoBehaviour
             return false;
         }
     }
+
+    private void handleMouse()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                string name = hit.collider.gameObject.name;
+                string tag = hit.collider.gameObject.tag;
+                if (!(s2==name))
+                {
+                    string pair1 = s2 + name;
+                    string pair2 = name + s2;
+                    if (!(pairs.Contains(pair1)) && !(pairs.Contains(pair2)))
+                    {
+                        s1 = s2;
+                        s2 = name;
+                        path.Add(s2);
+                        if (!string.IsNullOrEmpty(s1))
+                        {
+                            pairs.Add(pair1);
+                            drawLine(s1, s2);
+                            if (tag == "end")
+                            {
+                                onEnd();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    IEnumerator Spawn()
+    {
+        for(var x = 0; x < ListOfSphereValues.GetLength(0); x ++){
+            cont = true;
+            for(var y = 0; y < ListOfSphereValues.GetLength(1); y ++){
+                spawnSphere(ListOfSphereValues[x,y].rho, ListOfSphereValues[x,y].theta, ListOfSphereValues[x,y].phi, ListOfSphereValues[x,y].color, ListOfSphereValues[x,y].label, y == (ListOfSphereValues.GetLength(1) - 1), y);  
+                
+            }
+            do 
+            {
+                yield return null;
+            } while (cont);
+
+            GameObject[] spheres = GameObject.FindGameObjectsWithTag("sphere");
+
+            for (int i=0; i < spheres.Length; i++){
+                Destroy(spheres[i]);
+            }
+            GameObject[] lines = GameObject.FindGameObjectsWithTag("line");
+
+            for (int i=0; i < lines.Length; i++){
+                Destroy(lines[i]);
+            }
+
+            GameObject[] ends = GameObject.FindGameObjectsWithTag("end");
+
+            for (int i=0; i < ends.Length; i++){
+                Destroy(ends[i]);
+            }
+            
+
+        }
+    }
+
+    void spawnSphere(float rho, float theta, float phi, string color, string label, bool end, int y)
+    {
+        Vector3 spherePosition = new Vector3(rho * Mathf.Sin(phi) * Mathf.Cos(theta), rho * Mathf.Cos(phi), rho * Mathf.Sin(phi) * Mathf.Sin(theta));
+        GameObject sphere = Instantiate(spherePrefab, spherePosition, Quaternion.identity) as GameObject;
+        
+        sphere.name = "Sphere" + y.ToString();
+        if (end)
+        {
+            sphere.tag = "end";
+        }
+        var sphereScript = sphere.GetComponent<TextOnObjectManager>();
+        sphereScript.label = label;
+        sphereScript.playerCamera = cam;
+
+        var sphereRenderer = sphere.GetComponent<Renderer>();
+        Color colorValue = color == "white" ? LightColor: DarkColor;
+        sphereRenderer.material.SetColor("_Color", colorValue);
+
+        sphere.SetActive(true);
+    }
+
+    public class SphereValues
+    {
+        public float rho; 
+        public float theta; 
+        public float phi; 
+        public string color;
+        public string label;
+
+        public SphereValues(float rhoI, float thetaI, float phiI, string colorI, string labelI)
+        {
+            rho = rhoI;
+            theta = thetaI * Mathf.Deg2Rad;
+            phi =  phiI * Mathf.Deg2Rad;
+            color = colorI;
+            label = labelI;
+        }
+
+    }
+    SphereValues[,] ListOfSphereValues = new SphereValues[,]
+    {
+
+
+
+        {
+            new SphereValues(8,72,65,"white","1"),
+            new SphereValues(8,120,75,"white","2"), 
+            new SphereValues(8,210,70,"white","3"), 
+            new SphereValues(8,164,95,"white","4"), 
+            new SphereValues(8,280,70,"white","5"),
+            new SphereValues(8,340,42,"white","6"), 
+        },
+        {
+            new SphereValues(8,100,90,"white","1"),
+            new SphereValues(8,72,55,"white","2"), 
+            new SphereValues(8,248,75,"white","3"), 
+            new SphereValues(8,216,95,"white","4"), 
+            new SphereValues(8,2,70,"white","5"),
+            new SphereValues(8,154,42,"white","6"), 
+        },
+        {
+            new SphereValues(8,263,80,"white","1"),
+            new SphereValues(8,156,60,"white","2"), 
+            new SphereValues(8,6,63,"white","3"), 
+            new SphereValues(8,200,115,"white","4"), 
+            new SphereValues(8,45,55,"white","5"),
+            new SphereValues(8,169,54,"white","6"), 
+        },
+        {
+            new SphereValues(8,200,92,"white","1"),
+            new SphereValues(8,15,69,"white","2"), 
+            new SphereValues(8,80,95,"white","3"), 
+            new SphereValues(8,281,85,"white","4"), 
+            new SphereValues(8,165,87,"white","5"),
+            new SphereValues(8,122,50,"white","6"), 
+        },
+        {
+            new SphereValues(8,314,75,"white","1"),
+            new SphereValues(8,106,85,"white","2"), 
+            new SphereValues(8,194,73,"white","3"), 
+            new SphereValues(8,297,78,"white","4"), 
+            new SphereValues(8,126,88,"white","5"),
+            new SphereValues(8,236,64,"white","6"), 
+        },
+        {
+            new SphereValues(8,162,86,"white","1"),
+            new SphereValues(8,106,71,"white","2"), 
+            new SphereValues(8,203,74,"white","3"), 
+            new SphereValues(8,50,90,"white","4"), 
+            new SphereValues(8,293,120,"white","5"),
+            new SphereValues(8,327,88,"white","6"), 
+        },
+        {
+            new SphereValues(8,297,67,"white","1"),
+            new SphereValues(8,157,100,"white","2"), 
+            new SphereValues(8,27,89,"white","3"), 
+            new SphereValues(8,243,112,"white","4"), 
+            new SphereValues(8,128,45,"white","5"),
+            new SphereValues(8,211,110,"white","6"), 
+        },
+        {
+            new SphereValues(8,304,54,"white","1"),
+            new SphereValues(8,60,71,"white","2"), 
+            new SphereValues(8,335,92,"white","3"), 
+            new SphereValues(8,97,96,"white","4"), 
+            new SphereValues(8,173,86,"white","5"),
+            new SphereValues(8,117,83,"white","6"), 
+        },
+        {
+            new SphereValues(8,92,66,"white","1"),
+            new SphereValues(8,248,97,"white","2"), 
+            new SphereValues(8,83,53,"white","3"), 
+            new SphereValues(8,121,81,"white","4"), 
+            new SphereValues(8,200,77,"white","5"),
+            new SphereValues(8,290,96,"white","6"), 
+        },
+        {
+            new SphereValues(8,123,70,"white","1"),
+            new SphereValues(8,110,66,"white","2"), 
+            new SphereValues(8,357,79,"white","3"), 
+            new SphereValues(8,315,50,"white","4"), 
+            new SphereValues(8,224,104,"white","5"),
+            new SphereValues(8,99,101,"white","6"), 
+        },
+        {
+            new SphereValues(8,314,91,"white","1"),
+            new SphereValues(8,221,87,"white","2"), 
+            new SphereValues(8,113,87,"white","3"), 
+            new SphereValues(8,337,110,"white","4"), 
+            new SphereValues(8,190,120,"white","5"),
+            new SphereValues(8,53,54,"white","6"), 
+        },
+        {
+            new SphereValues(8,12,79,"white","1"),
+            new SphereValues(8,76,68,"white","2"), 
+            new SphereValues(8,296,114,"white","3"), 
+            new SphereValues(8,188,67,"white","4"), 
+            new SphereValues(8,335,99,"white","5"),
+            new SphereValues(8,226,67,"white","6"), 
+        },
+
+        // {
+        //     new SphereValues(15,0,90,"white","1"),
+        //     new SphereValues(15,72,90,"black","A"), 
+        //     new SphereValues(15,144,90,"white","2"), 
+        //     new SphereValues(15,216,90,"black","B"), 
+        //     new SphereValues(15,288,90,"white","3"), 
+        // },
+        // {
+        //     new SphereValues(15,0,85,"black","C"),
+        //     new SphereValues(15,72,85,"white","4"), 
+        //     new SphereValues(15,144,85,"black","D"), 
+        //     new SphereValues(15,216,85,"white","5"), 
+        //     new SphereValues(15,288,85,"black","E"), 
+        // },
+        // {
+        //     new SphereValues(15,0,80,"white","6"),
+        //     new SphereValues(15,72,80,"black","F"), 
+        //     new SphereValues(15,144,80,"white","7"), 
+        //     new SphereValues(15,216,80,"black","G"), 
+        //     new SphereValues(15,288,80,"white","8"), 
+        // },
+        // {
+        //     new SphereValues(15,0,75,"black","H"),
+        //     new SphereValues(15,72,75,"white","9"), 
+        //     new SphereValues(15,144,75,"black","I"), 
+        //     new SphereValues(15,216,75,"white","10"), 
+        //     new SphereValues(15,288,75,"black","J"), 
+        // }
+    };
+
 }

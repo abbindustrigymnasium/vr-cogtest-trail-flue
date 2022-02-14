@@ -110,5 +110,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 0}
-  label: 
+  label: 1
   font: {fileID: 12800000, guid: 3d812b58397a5be468c43f166a44db3a, type: 3}
