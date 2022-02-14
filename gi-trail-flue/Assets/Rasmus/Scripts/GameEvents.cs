@@ -17,4 +17,10 @@ public class GameEvents : MonoBehaviour
     {
         if (onNewLine != null) onNewLine(path);
     }
+
+    public event Action onNewGame;
+    public void NewGame()
+    {
+        if (onNewGame != null) onNewGame();
+    }
 }
