@@ -13,6 +13,16 @@ public class Line : MonoBehaviour
     private string s1;
     private string s2 = "";
 
+    void Start()
+    {
+        GameEvents.current.onNewGame += OnEnd;
+    }
+
+    void OnDestroy()
+    {
+        GameEvents.current.onNewGame -= OnEnd;
+    }
+
     void Update()
     {
         if (!Input.GetMouseButtonDown(0)) return;
@@ -36,12 +46,11 @@ public class Line : MonoBehaviour
         s2 = name;
 
         path.Add(s2);
+        GameEvents.current.NewLine(path);
 
         if (string.IsNullOrEmpty(s1)) return;
 
         pairs.Add(pair1);
-
-        GameEvents.current.NewLine(path);
 
         drawLine(s1, s2);
 
@@ -73,7 +82,7 @@ public class Line : MonoBehaviour
         lr.SetPosition(1, projectile.transform.position);
     }
 
-    private void onEnd()
+    private void OnEnd()
     {
         GameObject[] lines = GameObject.FindGameObjectsWithTag("line");
 
