@@ -6,16 +6,25 @@ public class DesignFluency : MonoBehaviour
 {
     void Start()
     {
-        GameEvents.current.onClick += OnClick;
-    }
-
-    void OnClick()
-    {
-        Debug.Log("Click");
+        GameEvents.current.onNewLine += OnNewLine;
     }
 
     void OnDestroy()
     {
-        GameEvents.current.onClick -= OnClick;
+        GameEvents.current.onNewLine -= OnNewLine;
+    }
+
+    void OnNewLine(List<string> path)
+    {
+        Debug.Log("Click: " + path[path.Count - 1]);
+
+        // Full circle
+        if (path.Count > 1 && path[0] == path[path.Count - 1])
+        {
+            // TODO: Validation
+
+            // Game over
+            GameEvents.current.NewGame();
+        }
     }
 }

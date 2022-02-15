@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameEvents : MonoBehaviour
+public class GameEvents2 : MonoBehaviour
 {
-    public static GameEvents current;
+    public static GameEvents2 current;
 
     public void Awake()
     {
@@ -18,9 +18,9 @@ public class GameEvents : MonoBehaviour
         if (onNewLine != null) onNewLine(path);
     }
 
-    public event Action onNewGame;
-    public void NewGame()
+    public event Action<List<string>> onNewGame;
+    public void NewGame(List<string> path)
     {
-        if (onNewGame != null) onNewGame();
+        if (onNewLine != null) onNewGame(path);
     }
 }

@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class TrailmakingLineWS : MonoBehaviour
+ 
+public class TrailmakingLineWSImported : MonoBehaviour
 {
 
     public GameObject spherePrefab;
@@ -45,7 +45,54 @@ public class TrailmakingLineWS : MonoBehaviour
 
     private void drawLine(string s1, string s2)
     {
-        var go = new GameObject();
+       
+ 
+        var gun = GameObject.Find(s1);
+        var projectile = GameObject.Find(s2);
+        float rhoL = (Mathf.Sqrt(Mathf.Pow(gun.transform.position.x,2f) + Mathf.Pow(gun.transform.position.y,2f) + Mathf.Pow(gun.transform.position.z,2f)) + Mathf.Sqrt(Mathf.Pow(gun.transform.position.x,2f) + Mathf.Pow(gun.transform.position.y,2f) + Mathf.Pow(gun.transform.position.z,2f)))/2;
+        float phiL = ((Mathf.Atan2(Mathf.Sqrt(Mathf.Pow(gun.transform.position.x,2f) + Mathf.Pow(gun.transform.position.z,2f)),gun.transform.position.y) + Mathf.Atan2(Mathf.Sqrt(Mathf.Pow(projectile.transform.position.x,2f) + Mathf.Pow(projectile.transform.position.z,2f)),projectile.transform.position.y)) % (2 * Mathf.PI))/2;
+        float thetaGun = mod(Mathf.Atan2(gun.transform.position.z,gun.transform.position.x), Mathf.PI * 2);
+        float thetaProjectile = mod(Mathf.Atan2(projectile.transform.position.z,projectile.transform.position.x), Mathf.PI * 2);
+        float thetaL;
+        
+        if (Mathf.Abs(thetaGun - thetaProjectile) > Mathf.PI * 2 - Mathf.Abs(thetaGun - thetaProjectile))
+        {
+            if (thetaGun + thetaProjectile >  Mathf.PI * 2)
+            {
+                thetaL = mod(thetaGun + thetaProjectile, Mathf.PI * 2)/2;
+            }
+            else
+            {
+                thetaL = thetaGun + thetaProjectile;
+            }
+        }
+        else
+        {
+            thetaL = (thetaGun + thetaProjectile)/2;
+        }
+        Debug.Log(Mathf.Abs(thetaGun - thetaProjectile) * Mathf.Rad2Deg);
+        Debug.Log(( Mathf.PI * 2 - Mathf.Abs(thetaGun - thetaProjectile)) * Mathf.Rad2Deg);
+        Debug.Log(thetaGun * Mathf.Rad2Deg);
+        Debug.Log(thetaProjectile * Mathf.Rad2Deg);
+        Debug.Log(thetaL * Mathf.Rad2Deg);
+        
+        Vector3 middle = new Vector3(rhoL * Mathf.Sin(phiL) * Mathf.Cos(thetaL), rhoL * Mathf.Cos(phiL), rhoL * Mathf.Sin(phiL) * Mathf.Sin(thetaL));
+
+
+ 
+        // lr.SetPosition(0, gun.transform.position);
+        // lr.SetPosition(1, projectile.transform.position);
+        lineBezierCurve(gun.transform.position, middle, projectile.transform.position);
+    }
+
+    float mod(float x, float m) {
+        float r = x%m;
+        return r<0 ? r+m : r;
+    }
+
+    private void lineBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
+    {
+         var go = new GameObject();
         var lr = go.AddComponent<LineRenderer>();
 
         go.name = "Line";
@@ -57,12 +104,16 @@ public class TrailmakingLineWS : MonoBehaviour
 
         lr.startWidth = 0.1f;
         lr.endWidth = 0.1f;
- 
-        var gun = GameObject.Find(s1);
-        var projectile = GameObject.Find(s2);
- 
-        lr.SetPosition(0, gun.transform.position);
-        lr.SetPosition(1, projectile.transform.position);
+
+        lr.positionCount = 200;
+        float t = 0f;
+        Vector3 B = new Vector3(0, 0, 0);
+        for (int i = 0; i < lr.positionCount; i++)
+        {
+            B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
+            lr.SetPosition(i, B);
+            t += (1 / (float)lr.positionCount);
+        }
     }
 
     private void onEnd()
@@ -175,7 +226,7 @@ public class TrailmakingLineWS : MonoBehaviour
         {
             sphere.tag = "end";
         }
-        var sphereScript = sphere.GetComponent<TextOnObject>();
+        var sphereScript = sphere.GetComponent<TextOnObjectManager>();
         sphereScript.label = label;
         sphereScript.playerCamera = cam;
 
@@ -209,7 +260,7 @@ public class TrailmakingLineWS : MonoBehaviour
 
 
 
-                {
+        {
             new SphereValues(8,72,65,"white","1"),
             new SphereValues(8,120,75,"white","2"), 
             new SphereValues(8,210,70,"white","3"), 
@@ -304,70 +355,6 @@ public class TrailmakingLineWS : MonoBehaviour
             new SphereValues(8,188,67,"white","4"), 
             new SphereValues(8,335,99,"white","5"),
             new SphereValues(8,226,67,"white","6"), 
-        },
-        {
-            new SphereValues(8,163,48,"white","1"),
-            new SphereValues(8,74,57,"white","2"), 
-            new SphereValues(8,114,68,"white","3"), 
-            new SphereValues(8,247,100,"white","4"), 
-            new SphereValues(8,307,108,"white","5"),
-            new SphereValues(8,252,89,"white","6"), 
-        },
-        {
-            new SphereValues(8,294,69,"white","1"),
-            new SphereValues(8,203,55,"white","2"), 
-            new SphereValues(8,125,47,"white","3"), 
-            new SphereValues(8,10,91,"white","4"), 
-            new SphereValues(8,352,60,"white","5"),
-            new SphereValues(8,176,76,"white","6"), 
-        },
-        {
-            new SphereValues(8,174,110,"white","1"),
-            new SphereValues(8,49,69,"white","2"), 
-            new SphereValues(8,267,106,"white","3"), 
-            new SphereValues(8,335,98,"white","4"), 
-            new SphereValues(8,90,95,"white","5"),
-            new SphereValues(8,220,85,"white","6"), 
-        },
-        {
-            new SphereValues(8,300,96,"white","1"),
-            new SphereValues(8,253,83,"white","2"), 
-            new SphereValues(8,185,63,"white","3"), 
-            new SphereValues(8,133,70,"white","4"), 
-            new SphereValues(8,93,58,"white","5"),
-            new SphereValues(8,291,86,"white","6"), 
-        },
-        {
-            new SphereValues(8,168,80,"white","1"),
-            new SphereValues(8,38,84,"white","2"), 
-            new SphereValues(8,244,52,"white","3"), 
-            new SphereValues(8,280,117,"white","4"), 
-            new SphereValues(8,76,56,"white","5"),
-            new SphereValues(8,125,83,"white","6"), 
-        },
-        {
-            new SphereValues(8,345,78,"white","1"),
-            new SphereValues(8,256,99,"white","2"), 
-            new SphereValues(8,12,79,"white","3"), 
-            new SphereValues(8,137,52,"white","4"), 
-            new SphereValues(8,180,87,"white","5"),
-            new SphereValues(8,285,85,"white","6"), 
-        },
-        {
-            new SphereValues(8,149,118,"white","1"),
-            new SphereValues(8,203,79,"white","2"), 
-            new SphereValues(8,9,71,"white","3"), 
-            new SphereValues(8,327,92,"white","4"), 
-            new SphereValues(8,256,118,"white","5"),
-            new SphereValues(8,65,112,"white","6"), 
-        },
-        {
-            new SphereValues(8,104,42,"white","1"),
-            new SphereValues(8,284,64,"white","2"), 
-            new SphereValues(8,122,104,"white","3"), 
-            new SphereValues(8,177,118,"white","4"), 
-            new SphereValues(8,244,70,"white","5"),
-            new SphereValues(8,65,57,"white","6"), 
         },
 
         // {
