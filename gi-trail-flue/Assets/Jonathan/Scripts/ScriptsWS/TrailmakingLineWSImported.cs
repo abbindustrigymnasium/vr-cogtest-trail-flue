@@ -119,35 +119,6 @@ public class TrailmakingLineWSImported : MonoBehaviour
             lr.SetPosition(i, nextPoint);
             start = nextPoint;
         } 
-
-        
-    }
-
-
-    private void lineBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
-    {
-        var go = new GameObject();
-        var lr = go.AddComponent<LineRenderer>();
-
-        go.name = "Line";
-        go.tag = "line";
-
-        lr.material = myMat;
-
-        lr.material.color = new Color(1,1,1);
-
-        lr.startWidth = 0.1f;
-        lr.endWidth = 0.1f;
-
-        lr.positionCount = 200;
-        float t = 0f;
-        Vector3 B = new Vector3(0, 0, 0);
-        for (int i = 0; i < lr.positionCount; i++) 
-        {
-            B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
-            lr.SetPosition(i, B);
-            t += (1 / (float)lr.positionCount);
-        }
     }
 
     private void onEnd()
