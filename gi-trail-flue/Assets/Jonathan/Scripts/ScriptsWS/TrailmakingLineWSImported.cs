@@ -43,56 +43,90 @@ public class TrailmakingLineWSImported : MonoBehaviour
         handleMouse();
     }
 
+    float mod(float x, float m) {
+        float r = x % m;
+        return r < 0 ? r + m : r;
+    }
+
     private void drawLine(string s1, string s2)
     {
-       
- 
-        var gun = GameObject.Find(s1);
-        var projectile = GameObject.Find(s2);
-        float rhoL = (Mathf.Sqrt(Mathf.Pow(gun.transform.position.x,2f) + Mathf.Pow(gun.transform.position.y,2f) + Mathf.Pow(gun.transform.position.z,2f)) + Mathf.Sqrt(Mathf.Pow(gun.transform.position.x,2f) + Mathf.Pow(gun.transform.position.y,2f) + Mathf.Pow(gun.transform.position.z,2f)))/2;
-        float phiL = ((Mathf.Atan2(Mathf.Sqrt(Mathf.Pow(gun.transform.position.x,2f) + Mathf.Pow(gun.transform.position.z,2f)),gun.transform.position.y) + Mathf.Atan2(Mathf.Sqrt(Mathf.Pow(projectile.transform.position.x,2f) + Mathf.Pow(projectile.transform.position.z,2f)),projectile.transform.position.y)) % (2 * Mathf.PI))/2;
-        float thetaGun = mod(Mathf.Atan2(gun.transform.position.z,gun.transform.position.x), Mathf.PI * 2);
-        float thetaProjectile = mod(Mathf.Atan2(projectile.transform.position.z,projectile.transform.position.x), Mathf.PI * 2);
-        float thetaL;
-        
-        if (Mathf.Abs(thetaGun - thetaProjectile) > Mathf.PI * 2 - Mathf.Abs(thetaGun - thetaProjectile))
-        {
-            if (thetaGun + thetaProjectile >  Mathf.PI * 2)
-            {
-                thetaL = mod(thetaGun + thetaProjectile, Mathf.PI * 2)/2;
-            }
-            else
-            {
-                thetaL = thetaGun + thetaProjectile;
-            }
-        }
-        else
-        {
-            thetaL = (thetaGun + thetaProjectile)/2;
-        }
-        Debug.Log(Mathf.Abs(thetaGun - thetaProjectile) * Mathf.Rad2Deg);
-        Debug.Log(( Mathf.PI * 2 - Mathf.Abs(thetaGun - thetaProjectile)) * Mathf.Rad2Deg);
-        Debug.Log(thetaGun * Mathf.Rad2Deg);
-        Debug.Log(thetaProjectile * Mathf.Rad2Deg);
-        Debug.Log(thetaL * Mathf.Rad2Deg);
-        
-        Vector3 middle = new Vector3(rhoL * Mathf.Sin(phiL) * Mathf.Cos(thetaL), rhoL * Mathf.Cos(phiL), rhoL * Mathf.Sin(phiL) * Mathf.Sin(thetaL));
+        Vector3 start = GameObject.Find(s1).transform.position;
+        Vector3 end = GameObject.Find(s2).transform.position;
 
+        var go = new GameObject();
+        var lr = go.AddComponent<LineRenderer>();
 
- 
-        // lr.SetPosition(0, gun.transform.position);
-        // lr.SetPosition(1, projectile.transform.position);
-        lineBezierCurve(gun.transform.position, middle, projectile.transform.position);
+        go.name = "Line";
+        go.tag = "line";
+
+        lr.material = myMat;
+        lr.material.color = new Color(1,1,1);
+
+        lr.startWidth = 0.1f;
+        lr.endWidth = 0.1f;
+
+        lr.positionCount = 200;
+
+        //Central angle between current start and end points
+        float deltaSigma = Mathf.Acos(Vector3.Dot(start.normalized, end.normalized));
+
+        //Angle between each point on the line
+        float angleToNextPoint = deltaSigma / (lr.positionCount);
+
+        //Sets start point so that the line is always drawn counterclockwise along the horizontal circle
+        if (mod(Mathf.Atan2(end.z,end.x) - Mathf.Atan2(start.z,start.x), 2 * Mathf.PI) > Mathf.PI)
+            {
+                (start, end) = (end, start);
+            }
+
+        lr.SetPosition(0, start);
+        lr.SetPosition((lr.positionCount - 1), end);
+        for (int i = 1; i < (lr.positionCount - 1); i++) 
+        {
+            
+            //Azimuthal angle for current start point
+            float thetaStart = Mathf.Atan2(start.z,start.x);
+
+            //Polar angle for current start point and end point
+            float phiStart = Mathf.Atan2(Mathf.Sqrt(Mathf.Pow(start.x, 2f) + Mathf.Pow(start.z, 2f)), start.y);
+            float phiEnd = Mathf.Atan2(Mathf.Sqrt(Mathf.Pow(end.x, 2f) + Mathf.Pow(end.z, 2f)),end.y);
+            
+            //Central angle between current start and end points
+            float deltaSigmaNew = Mathf.Acos(Vector3.Dot(start.normalized, end.normalized));
+
+           //Angle between north pole, start point and next point (atan2(y,x))
+            float x_Start = Mathf.Cos(phiEnd) - Mathf.Cos(deltaSigmaNew)  * Mathf.Cos(phiStart);
+            float y_Start = Mathf.Sqrt(Mathf.Max(0, Mathf.Pow(Mathf.Sin(deltaSigmaNew) * Mathf.Sin(phiStart), 2f) - Mathf.Pow(x_Start, 2f)));
+            float triangularAngleStart = Mathf.Atan2(y_Start, x_Start);
+
+            //Polar angle for new point 
+            float phiNewPoint = Mathf.Acos(Mathf.Cos(angleToNextPoint) * Mathf.Cos(phiStart) + Mathf.Sin(angleToNextPoint) * Mathf.Sin(phiStart) * Mathf.Cos(triangularAngleStart));
+            
+            //Angle between start point, north pole and next point (atan2(y,x))
+            float x_NewPoint = Mathf.Cos(angleToNextPoint) - Mathf.Cos(phiNewPoint)  * Mathf.Cos(phiStart);
+            float y_NewPoint = Mathf.Sqrt(Mathf.Max(0, Mathf.Pow(Mathf.Sin(phiNewPoint) * Mathf.Sin(phiStart), 2f) - Mathf.Pow(x_NewPoint, 2f)));
+            float poleAngleNew = Mathf.Atan2(y_NewPoint, x_NewPoint);
+
+            //Azimuthal angle for next point
+            float thetaNewPoint = thetaStart + poleAngleNew;
+
+            //Radial distance for next point
+            float rhoNew = (Mathf.Sqrt(Mathf.Pow(start.x,2f) + Mathf.Pow(start.y,2f) + Mathf.Pow(start.z,2f)) + Mathf.Sqrt(Mathf.Pow(end.x,2f) + Mathf.Pow(end.y,2f) + Mathf.Pow(end.z,2f)))/2;
+
+            Vector3 nextPoint = new Vector3(rhoNew * Mathf.Sin(phiNewPoint) * Mathf.Cos(thetaNewPoint), rhoNew * Mathf.Cos(phiNewPoint), rhoNew * Mathf.Sin(phiNewPoint) * Mathf.Sin(thetaNewPoint));
+            
+           
+            lr.SetPosition(i, nextPoint);
+            start = nextPoint;
+        } 
+
+        
     }
 
-    float mod(float x, float m) {
-        float r = x%m;
-        return r<0 ? r+m : r;
-    }
 
     private void lineBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
     {
-         var go = new GameObject();
+        var go = new GameObject();
         var lr = go.AddComponent<LineRenderer>();
 
         go.name = "Line";
@@ -108,7 +142,7 @@ public class TrailmakingLineWSImported : MonoBehaviour
         lr.positionCount = 200;
         float t = 0f;
         Vector3 B = new Vector3(0, 0, 0);
-        for (int i = 0; i < lr.positionCount; i++)
+        for (int i = 0; i < lr.positionCount; i++) 
         {
             B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
             lr.SetPosition(i, B);
@@ -171,7 +205,7 @@ public class TrailmakingLineWSImported : MonoBehaviour
                         {
                             pairs.Add(pair1);
                             drawLine(s1, s2);
-                            if (tag == "end")
+                            if (tag == "end.transform.position")
                             {
                                 onEnd();
                             }
@@ -206,7 +240,7 @@ public class TrailmakingLineWSImported : MonoBehaviour
                 Destroy(lines[i]);
             }
 
-            GameObject[] ends = GameObject.FindGameObjectsWithTag("end");
+            GameObject[] ends = GameObject.FindGameObjectsWithTag("end.transform.position");
 
             for (int i=0; i < ends.Length; i++){
                 Destroy(ends[i]);
@@ -226,7 +260,7 @@ public class TrailmakingLineWSImported : MonoBehaviour
         {
             sphere.tag = "end";
         }
-        var sphereScript = sphere.GetComponent<TextOnObjectManager>();
+        var sphereScript = sphere.GetComponent<TextOnObject>();
         sphereScript.label = label;
         sphereScript.playerCamera = cam;
 

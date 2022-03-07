@@ -320,23 +320,6 @@ MonoBehaviour:
   horizontalSpeed: 10
   verticalSpeed: 10
   cam: {fileID: 89619224}
---- !u!114 &89619227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 89619223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ac0f937a8630734dbe8aaf68530b2e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spherePrefab: {fileID: 355027786761755367, guid: 507d0897b2062b347a856965f026acb1, type: 3}
-  lightColorHEX: '#d4b34a'
-  darkColorHEX: '#000080'
-  cam: {fileID: 89619224}
-  myMat: {fileID: 2100000, guid: 7e55c329ff7186c47a01a1a7217e91e7, type: 2}
 --- !u!1 &1226567950
 GameObject:
   m_ObjectHideFlags: 0
