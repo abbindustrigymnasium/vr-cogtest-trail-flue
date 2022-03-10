@@ -5,11 +5,13 @@ using UnityEngine;
 public class TrailmakingLineWSImported : MonoBehaviour
 {
 
-    public GameObject spherePrefab;
+     public GameObject spherePrefab;
     public string lightColorHEX;
     public string darkColorHEX;
+    public string lineColorHEX;
     Color LightColor;
     Color DarkColor;
+    Color lineColor;
 
     public Camera cam;
     public Material myMat;
@@ -34,6 +36,7 @@ public class TrailmakingLineWSImported : MonoBehaviour
     {
         ColorUtility.TryParseHtmlString(lightColorHEX, out LightColor);
         ColorUtility.TryParseHtmlString(darkColorHEX, out DarkColor);
+        ColorUtility.TryParseHtmlString(lineColorHEX, out lineColor);
         StartCoroutine("Spawn");
     }
 
@@ -60,7 +63,7 @@ public class TrailmakingLineWSImported : MonoBehaviour
         go.tag = "line";
 
         lr.material = myMat;
-        lr.material.color = new Color(1,1,1);
+        lr.material.SetColor("_Color", lineColor);
 
         lr.startWidth = 0.1f;
         lr.endWidth = 0.1f;

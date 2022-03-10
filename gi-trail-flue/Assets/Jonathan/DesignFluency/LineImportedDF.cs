@@ -7,6 +7,8 @@ public class LineImportedDF : MonoBehaviour
   
     public Camera cam;
     public Material myMat;
+    public string lineColorHEX;
+    Color lineColor;
 
     public List<string> path = new List<string>();
     public List<string> pairs = new List<string>();
@@ -17,6 +19,7 @@ public class LineImportedDF : MonoBehaviour
 
     void Start()
     {
+        ColorUtility.TryParseHtmlString(lineColorHEX, out lineColor);
         GameEvents.current.onNewGame += OnEnd;
     }
 
@@ -75,11 +78,12 @@ public class LineImportedDF : MonoBehaviour
         var go = new GameObject();
         var lr = go.AddComponent<LineRenderer>();
 
+
         go.name = "Line";
         go.tag = "line";
 
         lr.material = myMat;
-        lr.material.color = new Color(1,1,1);
+        lr.material.SetColor("_Color", lineColor);
 
         lr.startWidth = 0.1f;
         lr.endWidth = 0.1f;
@@ -114,14 +118,16 @@ public class LineImportedDF : MonoBehaviour
             //Polar angle for current start point and end point
             float phiStart = Mathf.Atan2(Mathf.Sqrt(Mathf.Pow(start.x, 2f) + Mathf.Pow(start.z, 2f)), start.y);
             float phiEnd = Mathf.Atan2(Mathf.Sqrt(Mathf.Pow(end.x, 2f) + Mathf.Pow(end.z, 2f)),end.y);
-            
+
             //Central angle between current start and end points
             float deltaSigmaNew = Mathf.Acos(Vector3.Dot(start.normalized, end.normalized));
+            float newfloat = 12f;
 
             //Angle between north pole, start point and next point (atan2(y,x))
             float x_Start = Mathf.Cos(phiEnd) - Mathf.Cos(deltaSigmaNew)  * Mathf.Cos(phiStart);
             float y_Start = Mathf.Sqrt(Mathf.Max(0, Mathf.Pow(Mathf.Sin(deltaSigmaNew) * Mathf.Sin(phiStart), 2f) - Mathf.Pow(x_Start, 2f)));
             float triangularAngleStart = Mathf.Atan2(y_Start, x_Start);
+            
 
             //Polar angle for new point 
             float phiNewPoint = Mathf.Acos(Mathf.Cos(angleToNextPoint) * Mathf.Cos(phiStart) + Mathf.Sin(angleToNextPoint) * Mathf.Sin(phiStart) * Mathf.Cos(triangularAngleStart));
