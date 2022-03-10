@@ -11,8 +11,10 @@ public class Line2Imported : MonoBehaviour
     public GameObject spherePrefab;
     public string lightColorHEX;
     public string darkColorHEX;
+    public string lineColorHEX;
     Color LightColor;
     Color DarkColor;
+    Color lineColor;
 
         public List<SphereValues[,]> ActiveSphereList = new List<SphereValues[,]>
     {
@@ -519,6 +521,7 @@ public class Line2Imported : MonoBehaviour
     {
         ColorUtility.TryParseHtmlString(lightColorHEX, out LightColor);
         ColorUtility.TryParseHtmlString(darkColorHEX, out DarkColor);
+        ColorUtility.TryParseHtmlString(lineColorHEX, out lineColor);
         StartCoroutine("Spawn");
         GameEvents2.current.onNewGame += OnNewGame;
         GameEvents2.current.onNewMode += OnNewMode;
@@ -546,7 +549,7 @@ public class Line2Imported : MonoBehaviour
         go.tag = "line";
 
         lr.material = myMat;
-        lr.material.color = new Color(1,1,1);
+        lr.material.SetColor("_Color", lineColor);
 
         lr.startWidth = 0.1f;
         lr.endWidth = 0.1f;
