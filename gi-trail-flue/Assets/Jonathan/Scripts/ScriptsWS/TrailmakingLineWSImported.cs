@@ -79,6 +79,11 @@ public class TrailmakingLineWSImported : MonoBehaviour
                 (start, end) = (end, start);
             }
 
+        //Radial distance for start and end point
+        float rhoStart = Mathf.Sqrt(Mathf.Pow(start.x,2f) + Mathf.Pow(start.y,2f) + Mathf.Pow(start.z,2f));
+        float rhoEnd = Mathf.Sqrt(Mathf.Pow(end.x,2f) + Mathf.Pow(end.y,2f) + Mathf.Pow(end.z,2f));
+        float totalPosition = (float)lr.positionCount;
+
         lr.SetPosition(0, start);
         lr.SetPosition((lr.positionCount - 1), end);
         for (int i = 1; i < (lr.positionCount - 1); i++) 
@@ -110,8 +115,10 @@ public class TrailmakingLineWSImported : MonoBehaviour
             //Azimuthal angle for next point
             float thetaNewPoint = thetaStart + poleAngleNew;
 
-            //Radial distance for next point
-            float rhoNew = (Mathf.Sqrt(Mathf.Pow(start.x,2f) + Mathf.Pow(start.y,2f) + Mathf.Pow(start.z,2f)) + Mathf.Sqrt(Mathf.Pow(end.x,2f) + Mathf.Pow(end.y,2f) + Mathf.Pow(end.z,2f)))/2;
+            //Radial distance for next point 
+            float currentPosition = (float)i;
+            float rhoNew = (((totalPosition - currentPosition)/totalPosition) * rhoStart + (currentPosition/totalPosition) * rhoEnd);
+            
 
             Vector3 nextPoint = new Vector3(rhoNew * Mathf.Sin(phiNewPoint) * Mathf.Cos(thetaNewPoint), rhoNew * Mathf.Cos(phiNewPoint), rhoNew * Mathf.Sin(phiNewPoint) * Mathf.Sin(thetaNewPoint));
             

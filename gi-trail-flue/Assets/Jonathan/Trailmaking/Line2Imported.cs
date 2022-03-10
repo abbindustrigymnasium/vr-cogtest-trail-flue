@@ -560,10 +560,15 @@ public class Line2Imported : MonoBehaviour
         float angleToNextPoint = deltaSigma / (lr.positionCount);
 
         //Sets start point so that the line is always drawn counterclockwise along the horizontal circle
-        if (mod(Mathf.Atan2(end.z,end.x) - Mathf.Atan2(start.z,start.x), 2 * Mathf.PI) > Mathf.PI)
+       if (mod(Mathf.Atan2(end.z,end.x) - Mathf.Atan2(start.z,start.x), 2 * Mathf.PI) > Mathf.PI)
             {
                 (start, end) = (end, start);
             }
+
+        //Radial distance for start and end point
+        float rhoStart = Mathf.Sqrt(Mathf.Pow(start.x,2f) + Mathf.Pow(start.y,2f) + Mathf.Pow(start.z,2f));
+        float rhoEnd = Mathf.Sqrt(Mathf.Pow(end.x,2f) + Mathf.Pow(end.y,2f) + Mathf.Pow(end.z,2f));
+        float totalPosition = (float)lr.positionCount;
 
         lr.SetPosition(0, start);
         lr.SetPosition((lr.positionCount - 1), end);
@@ -596,8 +601,10 @@ public class Line2Imported : MonoBehaviour
             //Azimuthal angle for next point
             float thetaNewPoint = thetaStart + poleAngleNew;
 
-            //Radial distance for next point
-            float rhoNew = (Mathf.Sqrt(Mathf.Pow(start.x,2f) + Mathf.Pow(start.y,2f) + Mathf.Pow(start.z,2f)) + Mathf.Sqrt(Mathf.Pow(end.x,2f) + Mathf.Pow(end.y,2f) + Mathf.Pow(end.z,2f)))/2;
+            //Radial distance for next point 
+            float currentPosition = (float)i;
+            float rhoNew = (((totalPosition - currentPosition)/totalPosition) * rhoStart + (currentPosition/totalPosition) * rhoEnd);
+            
 
             Vector3 nextPoint = new Vector3(rhoNew * Mathf.Sin(phiNewPoint) * Mathf.Cos(thetaNewPoint), rhoNew * Mathf.Cos(phiNewPoint), rhoNew * Mathf.Sin(phiNewPoint) * Mathf.Sin(thetaNewPoint));
             
