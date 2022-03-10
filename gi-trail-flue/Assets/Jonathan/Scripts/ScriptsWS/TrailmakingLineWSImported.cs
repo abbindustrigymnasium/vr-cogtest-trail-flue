@@ -94,7 +94,7 @@ public class TrailmakingLineWSImported : MonoBehaviour
             //Central angle between current start and end points
             float deltaSigmaNew = Mathf.Acos(Vector3.Dot(start.normalized, end.normalized));
 
-           //Angle between north pole, start point and next point (atan2(y,x))
+            //Angle between north pole, start point and next point (atan2(y,x))
             float x_Start = Mathf.Cos(phiEnd) - Mathf.Cos(deltaSigmaNew)  * Mathf.Cos(phiStart);
             float y_Start = Mathf.Sqrt(Mathf.Max(0, Mathf.Pow(Mathf.Sin(deltaSigmaNew) * Mathf.Sin(phiStart), 2f) - Mathf.Pow(x_Start, 2f)));
             float triangularAngleStart = Mathf.Atan2(y_Start, x_Start);
@@ -192,8 +192,7 @@ public class TrailmakingLineWSImported : MonoBehaviour
         for(var x = 0; x < ListOfSphereValues.GetLength(0); x ++){
             cont = true;
             for(var y = 0; y < ListOfSphereValues.GetLength(1); y ++){
-                spawnSphere(ListOfSphereValues[x,y].rho, ListOfSphereValues[x,y].theta, ListOfSphereValues[x,y].phi, ListOfSphereValues[x,y].color, ListOfSphereValues[x,y].label, y == (ListOfSphereValues.GetLength(1) - 1), y);  
-                
+                spawnSphere(ListOfSphereValues[x,y].rho, ListOfSphereValues[x,y].theta, ListOfSphereValues[x,y].phi, ListOfSphereValues[x,y].color, ListOfSphereValues[x,y].label, y == (ListOfSphereValues.GetLength(1) - 1), y);
             }
             do 
             {
@@ -220,6 +219,8 @@ public class TrailmakingLineWSImported : MonoBehaviour
 
         }
     }
+
+
 
     void spawnSphere(float rho, float theta, float phi, string color, string label, bool end, int y)
     {
