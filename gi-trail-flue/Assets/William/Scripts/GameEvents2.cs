@@ -35,4 +35,10 @@ public class GameEvents2 : MonoBehaviour
     {
         if (onGameDone != null) onGameDone();
     }
+
+    public event Action onInstructionDone;
+    public void InstructionDone()
+    {
+        if (onInstructionDone != null) onInstructionDone();
+    }
 }
