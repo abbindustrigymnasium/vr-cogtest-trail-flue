@@ -405,6 +405,7 @@ MonoBehaviour:
   spherePrefab: {fileID: 355027786761755367, guid: 507d0897b2062b347a856965f026acb1, type: 3}
   lightColorHEX: '#d4b34a'
   darkColorHEX: '#000080'
+  lineColorHEX: '#659DA4'
 --- !u!1 &871892210
 GameObject:
   m_ObjectHideFlags: 0
