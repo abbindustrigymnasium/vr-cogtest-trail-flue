@@ -6,7 +6,8 @@ using UnityEngine;
 public class Trailmaking2 : MonoBehaviour
 {
 
-    public float timeRemaining = 60 * 5;
+    public static float time = 10;
+    public float timeRemaining = 10000000;
     public bool gameOver = false;
 
     private List<string> order = new List<string>()
@@ -27,16 +28,16 @@ public class Trailmaking2 : MonoBehaviour
         GameEvents2.current.onNewLine += OnNewLine;
         GameEvents2.current.onNewGame += OnNewGame;
         GameEvents2.current.onGameDone += OnGameDone;
+        GameEvents2.current.onInstructionDone += OnInstructionDone;
+        timeRemaining = 10000000;
     }
 
     void OnNewLine(List<string> path, int sphereTime)
     {
         // TODO: Validation
-        Debug.Log("Click");
 
         if (GameObject.Find(path[path.Count-1]).tag == "end")
         {
-            Debug.Log("Yuh");
             GameEvents2.current.NewGame(path, sphereTime);
             // GameEvents2.current.NewMode();
         }
@@ -44,7 +45,6 @@ public class Trailmaking2 : MonoBehaviour
 
     void OnNewGame(List<string> path, int sphereTime)
     {
-        Debug.Log("NewGame!!");
         validate(path, order, sphereTime);
         // onEnd();
     }
@@ -54,22 +54,21 @@ public class Trailmaking2 : MonoBehaviour
         gameOver = true;
     }
 
+    void OnInstructionDone()
+    {
+        timeRemaining = 10;
+    }
+
     private bool validate1A(List<string> path, List<string> order)
     {
         if (string.Join("", path.ToArray()) == string.Join("", order.ToArray()))
         {
             corrects += 1;
-            //path.ForEach(x=>Debug.Log(x + " "));
-            Debug.Log(corrects);
-            Debug.Log(wrongs);
             return true;
         }
         else
         {
             wrongs += 1;
-            //path.ForEach(x=>Debug.Log(x + " "));
-            Debug.Log(corrects);
-            Debug.Log(wrongs);
             return false;
         }
     }
@@ -115,7 +114,7 @@ public class Trailmaking2 : MonoBehaviour
         }
         else
         {
-            timeRemaining = 60 * 5;
+            timeRemaining = 1000000;
             if (!gameOver)
             {
                 GameEvents2.current.NewMode();
@@ -127,6 +126,7 @@ public class Trailmaking2 : MonoBehaviour
     {
         GameEvents2.current.onNewLine -= OnNewLine;
         GameEvents2.current.onNewGame -= OnNewGame;
-        GameEvents2.current.onGameDone += OnGameDone;
+        GameEvents2.current.onGameDone -= OnGameDone;
+        GameEvents2.current.onInstructionDone -= OnInstructionDone;
     }
 }
