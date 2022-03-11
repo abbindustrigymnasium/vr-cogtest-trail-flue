@@ -18,9 +18,9 @@ public class GameEvents : MonoBehaviour
         if (onNewLine != null) onNewLine(path);
     }
 
-    public event Action onNewGame;
-    public void NewGame()
+    public event Action<Level> onNewGame;
+    public void NewGame(Level level)
     {
-        if (onNewGame != null) onNewGame();
+        if (onNewGame != null) onNewGame(level);
     }
 }

@@ -6,11 +6,12 @@ public class Line : MonoBehaviour
 {
     public Camera cam;
     public Material myMat;
+    public Font font;
 
     public List<string> path = new List<string>();
     public List<string> pairs = new List<string>();
 
-    private string s1;
+    private string s1 = "";
     private string s2 = "";
 
     void Start()
@@ -53,11 +54,6 @@ public class Line : MonoBehaviour
         pairs.Add(pair1);
 
         drawLine(s1, s2);
-
-        /*if (tag == "end")
-        {
-            onEnd();
-        }*/
     }
 
     private void drawLine(string s1, string s2)
@@ -82,8 +78,9 @@ public class Line : MonoBehaviour
         lr.SetPosition(1, projectile.transform.position);
     }
 
-    private void OnEnd()
+    private void OnEnd(Level level)
     {
+        // Destroy lines
         GameObject[] lines = GameObject.FindGameObjectsWithTag("line");
 
         foreach (GameObject line in lines)
@@ -95,13 +92,19 @@ public class Line : MonoBehaviour
         s1 = "";
         s2 = "";
 
-        path = new List<string>();
-        pairs = new List<string>();
-    }
+        // Clear lists
+        path.Clear();
+        pairs.Clear();
 
-    private bool validate()
-    {
-        // todo: validate order
-        return true;
+        // Destroy old spheres
+        GameObject[] oldSpheres = GameObject.FindGameObjectsWithTag("sphere");
+
+        foreach (GameObject sphere in oldSpheres)
+        {
+            Destroy(sphere);
+        }
+
+        // Create new spheres
+        level.spawn(cam, font);
     }
 }
