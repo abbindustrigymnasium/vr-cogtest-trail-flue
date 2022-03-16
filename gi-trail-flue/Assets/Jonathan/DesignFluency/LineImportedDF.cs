@@ -20,12 +20,12 @@ public class LineImportedDF : MonoBehaviour
     void Start()
     {
         ColorUtility.TryParseHtmlString(lineColorHEX, out lineColor);
-        GameEvents.current.onNewGame += OnEnd;
+        // GameEvents.current.onNewGame += OnEnd;
     }
 
     void OnDestroy()
     {
-        GameEvents.current.onNewGame -= OnEnd;
+        // GameEvents.current.onNewGame -= OnEnd;
     }
 
     void Update()

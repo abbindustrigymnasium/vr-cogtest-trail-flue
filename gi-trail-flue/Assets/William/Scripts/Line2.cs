@@ -8,6 +8,8 @@ public class Line2 : MonoBehaviour
     public Material myMat;
     public int sphereTime = -1;
 
+
+    private MaterialPropertyBlock _propBlock;
     public GameObject spherePrefab;
     public string lightColorHEX;
     public string darkColorHEX;
@@ -519,6 +521,7 @@ public class Line2 : MonoBehaviour
 
     void Start()
     {
+        _propBlock = new MaterialPropertyBlock();
         ColorUtility.TryParseHtmlString(lightColorHEX, out LightColor);
         ColorUtility.TryParseHtmlString(darkColorHEX, out DarkColor);
         ColorUtility.TryParseHtmlString(lineColorHEX, out lineColor);
@@ -621,8 +624,17 @@ public class Line2 : MonoBehaviour
 
     private void handleMouse()
     {
+        
         if (!Input.GetMouseButtonDown(0)) return;
 
+        // UnityEngine.XR.InputDevice handR = InputDevices.GetDeviceAtXRNode(XRNode.RightHand); //InputDeviceRole.RightHanded
+
+        // if (!handr.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue) return;
+        // handR.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceRotation, out Quaternion rotR);
+        // handR.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceRotation, out Vector3 posR);
+        // Vector3 direction = rotR * Vector3.forward;
+
+        // Ray ray = new Ray(posR, direction);
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -677,6 +689,7 @@ public class Line2 : MonoBehaviour
         Vector3 spherePosition = new Vector3(rho * Mathf.Sin(phi) * Mathf.Cos(theta), rho * Mathf.Cos(phi), rho * Mathf.Sin(phi) * Mathf.Sin(theta));
         GameObject sphere = Instantiate(spherePrefab, spherePosition, Quaternion.identity) as GameObject;
         
+        
         sphere.name = "Sphere" + y.ToString();
         if (end)
         {
@@ -687,8 +700,12 @@ public class Line2 : MonoBehaviour
         sphereScript.playerCamera = cam;
 
         var sphereRenderer = sphere.GetComponent<Renderer>();
-        Color colorValue = color == "white" ? LightColor: DarkColor;
-        sphereRenderer.material.SetColor("_Color", colorValue);
+        Color colorValue = color == "white" ? LightColor : DarkColor;
+        // sphereRenderer.material.SetColor("_Color", DarkColor);
+
+        sphereRenderer.GetPropertyBlock(_propBlock);
+        _propBlock.SetColor("_Color", DarkColor);
+        sphereRenderer.SetPropertyBlock(_propBlock);
 
         sphere.SetActive(true);
     }

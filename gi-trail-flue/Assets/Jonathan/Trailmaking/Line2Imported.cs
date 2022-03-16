@@ -685,7 +685,7 @@ public class Line2Imported : MonoBehaviour
 
         var sphereRenderer = sphere.GetComponent<Renderer>();
         Color colorValue = color == "white" ? LightColor: DarkColor;
-        sphereRenderer.material.SetColor("_Color", colorValue);
+        sphereRenderer.material.SetColor("_Color", DarkColor);
 
         sphere.SetActive(true);
     }
