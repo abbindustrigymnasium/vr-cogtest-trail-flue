@@ -982,11 +982,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5445001165462474953, guid: 98858d9d9da3a4246b165db11df199c2, type: 3}
       propertyPath: verticalSpeed
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5445001165462474953, guid: 98858d9d9da3a4246b165db11df199c2, type: 3}
       propertyPath: horizontalSpeed
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5445001165462474954, guid: 98858d9d9da3a4246b165db11df199c2, type: 3}
       propertyPath: m_RootOrder
