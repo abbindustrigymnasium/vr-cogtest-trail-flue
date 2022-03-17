@@ -662,7 +662,7 @@ public class Line2 : MonoBehaviour
         string name = hit.collider.gameObject.name;
         string tag = hit.collider.gameObject.tag;
 
-        if (!(tag=="sphere")) return;
+        if (!(tag=="sphere") && !(tag=="end")) return;
 
         if (s2 == name) return;
 
