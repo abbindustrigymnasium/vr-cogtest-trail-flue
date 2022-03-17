@@ -13,18 +13,18 @@ public class DesignFluency : MonoBehaviour
 {
     List<Level> levels = new List<Level>(){
         new Level(new List<Sphere>() {
-            new Sphere(7, 60, 90, "light", "1"),
-            new Sphere(7, 70, 80, "dark", "A"),
-            new Sphere(7, 80, 85, "light", "2"),
-            new Sphere(7, 90, 80, "dark", "B"),
-            new Sphere(7, 100, 90, "light", "3")
+            new Sphere(7, 60, 90, "light", ""),
+            new Sphere(7, 70, 80, "dark", ""),
+            new Sphere(7, 80, 85, "light", ""),
+            new Sphere(7, 90, 80, "dark", ""),
+            new Sphere(7, 100, 90, "light", "")
         }),
         new Level(new List<Sphere>() {
-            new Sphere(7, 60, 90, "dark", "1"),
-            new Sphere(7, 70, 80, "light", "A"),
-            new Sphere(7, 80, 85, "dark", "2"),
-            new Sphere(7, 90, 80, "light", "B"),
-            new Sphere(7, 100, 90, "dark", "3")
+            new Sphere(7, 60, 90, "dark", ""),
+            new Sphere(7, 70, 80, "light", ""),
+            new Sphere(7, 80, 85, "dark", ""),
+            new Sphere(7, 90, 80, "light", ""),
+            new Sphere(7, 100, 90, "dark", "")
         })
     };
 
