@@ -20,11 +20,11 @@ public class DesignFluency : MonoBehaviour
             new Sphere(7, 100, 90, "light", "")
         }),
         new Level(new List<Sphere>() {
-            new Sphere(7, 60, 90, "dark", ""),
-            new Sphere(7, 70, 80, "light", ""),
-            new Sphere(7, 80, 85, "dark", ""),
-            new Sphere(7, 90, 80, "light", ""),
-            new Sphere(7, 100, 90, "dark", "")
+            new Sphere(7, 60, 80, "dark", ""),
+            new Sphere(7, 70, 90, "light", ""),
+            new Sphere(7, 80, 80, "dark", ""),
+            new Sphere(7, 90, 90, "light", ""),
+            new Sphere(7, 100, 80, "dark", "")
         })
     };
 

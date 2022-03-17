@@ -55,7 +55,7 @@ public class Sphere
 
         Renderer innerObjectRenderer = innerObject.GetComponent<Renderer>();
         innerObjectRenderer.material = sphere.GetComponent<Renderer>().material;
-        innerObjectRenderer.material.SetColor("_Color", color == "light" ? new Color(232, 156, 33) : new Color(11, 49, 66));
+        innerObjectRenderer.material.SetColor("_Color", color == "light" ? new Color32(232, 156, 33, 0) : new Color32(11, 49, 66, 0));
 
         sphere.name += "_textDecal";
         sphere.tag = "sphere";
